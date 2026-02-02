@@ -4,10 +4,10 @@ from langchain_core.documents import Document
 import os
 import pandas as pd
 
-df = pd.read_csv("realistic_restaurant_reviews.csv")
-embeddings = OllamaEmbeddings(model="mxbai-embed-large")
+df = pd.read_csv("realistic_restaurant_reviews2.csv")
+embeddings = OllamaEmbeddings(model="mxbai-embed-large", base_url="http://192.168.51.147:11434")
 
-db_location = "./chrome_langchain_db"
+db_location = "./chroma_langchain_db"
 add_documents = not os.path.exists(db_location)
 
 if add_documents:
@@ -16,8 +16,8 @@ if add_documents:
     
     for i, row in df.iterrows():
         document = Document(
-            page_content=row["Title"] + " " + row["Review"],
-            metadata={"rating": row["Rating"], "date": row["Date"]},
+            page_content=row["Shop"] + ": Rating[" + str(row["Rating"]) + "], " + row["Title"] + " - " + row["Review"],
+            metadata={"shop": row["Shop"], "rating": row["Rating"], "date": row["Date"]},
             id=str(i)
         )
         ids.append(str(i))
